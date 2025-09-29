@@ -1,0 +1,15 @@
+meta {
+  name: Welcome
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{server}}:{{port_base}}/
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,26 @@
+meta {
+  name: Login
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{server}}:{{port_base}}/auth/login
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email" : "Hello@hWorld.com",
+    "password" : "password"
+  }
+}
+
+tests {
+  bru.setVar("token", res.body.token);
+}
+
+settings {
+  encodeUrl: true
+}

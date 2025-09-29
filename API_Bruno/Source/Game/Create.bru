@@ -1,0 +1,21 @@
+meta {
+  name: Create
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{server}}:{{port_base}}/game/create
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name" : "Minecraft"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

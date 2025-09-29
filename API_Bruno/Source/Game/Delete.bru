@@ -1,0 +1,21 @@
+meta {
+  name: Delete
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{server}}:{{port_base}}/game/delete/1
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "done" : true
+  }
+}
+
+settings {
+  encodeUrl: true
+}

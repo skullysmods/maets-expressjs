@@ -1,0 +1,15 @@
+meta {
+  name: Add Game To User
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{server}}:{{port_base}}/admin/add/user/1/game/1
+  body: json
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

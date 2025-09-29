@@ -1,0 +1,76 @@
+services:
+  # ----------- MariaDB Service -----------
+  db:
+    image: mariadb:11
+    container_name: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: appdb
+      MYSQL_USER: app
+      MYSQL_PASSWORD: apppass
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+
+  # ----------- Keyfile Generator for MongoDB -----------
+  keygen:
+    image: alpine:3.20
+    command: >
+      /bin/sh -lc "
+        mkdir -p /data/configdb &&
+        [ -f /data/configdb/keyfile ] || (head -c 756 /dev/urandom | base64 > /data/configdb/keyfile) &&
+        chmod 600 /data/configdb/keyfile &&
+        chown 999:999 /data/configdb/keyfile
+      "
+    volumes:
+      - mongo-config:/data/configdb
+
+  # ----------- MongoDB Replica Set Node -----------
+  mongo-rs:
+    image: mongo:7.0
+    container_name: mongo-rs
+    depends_on:
+      - keygen
+    command: [ "--replSet", "rs0", "--bind_ip_all", "--keyFile", "/data/configdb/keyfile" ]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+      MONGO_INITDB_DATABASE: myapp_test
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-config:/data/configdb
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "mongosh --host localhost --port 27017 -u mongo -p mongo --authenticationDatabase admin --quiet --eval \"db.adminCommand('ping').ok\" | grep 1" ]
+      interval: 30s
+      timeout: 3s
+      retries: 10
+
+  # ----------- MongoDB Replica Set Initialization -----------
+  rs-init:
+    image: mongo:7.0
+    depends_on:
+      mongo-rs:
+        condition: service_healthy
+    entrypoint:
+      - bash
+      - -c
+      - |
+        echo "Waiting for MongoDB to be ready..."
+        sleep 5
+        echo "Checking if replica set is already initialized..."
+        if mongosh --host mongo-rs --port 27017 -u mongo -p mongo --authenticationDatabase admin --quiet --eval 'rs.status().ok' 2>/dev/null | grep -q 1; then
+          echo "Replica set already initialized"
+        else
+          echo "Initializing replica set..."
+          mongosh --host mongo-rs --port 27017 -u mongo -p mongo --authenticationDatabase admin --eval 'rs.initiate({_id:"rs0", members:[{_id:0, host:"localhost:27017"}]})'
+          echo "Replica set initialization completed"
+        fi
+    restart: "no"
+
+volumes:
+  dbdata:
+  mongo-config:

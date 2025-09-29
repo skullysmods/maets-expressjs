@@ -1,0 +1,21 @@
+meta {
+  name: Patch Task
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{server}}:{{port_base}}/tasks/68d1db3cfa62075e4d62aaaa
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "done" : true
+  }
+}
+
+settings {
+  encodeUrl: true
+}

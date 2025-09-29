@@ -1,0 +1,21 @@
+meta {
+  name: Add Game
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{server}}:{{port_base}}/library/add
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name" : "Minecraft"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

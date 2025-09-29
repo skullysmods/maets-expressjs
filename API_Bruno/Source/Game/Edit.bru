@@ -1,0 +1,21 @@
+meta {
+  name: Edit
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{server}}:{{port_base}}/game/edit/1
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name" : "Minecraft Java"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

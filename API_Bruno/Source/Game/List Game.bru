@@ -1,0 +1,15 @@
+meta {
+  name: List Game
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{server}}:{{port_base}}/game
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
