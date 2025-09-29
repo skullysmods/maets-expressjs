@@ -1,0 +1,23 @@
+meta {
+  name: Patch Game Config
+  type: http
+  seq: 1
+}
+
+patch {
+  url: {{server}}:{{port_base}}/library/1/config
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "resolution": { "width": 1280, "height": 1024 },
+    "graphicsQuality": "Medium",
+    "frameRateLimit": 144
+  }
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,23 @@
+meta {
+  name: Post Game Config
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{server}}:{{port_base}}/library/1/config
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "resolution": { "width": 1920, "height": 1080 },
+    "graphicsQuality": "High",
+    "frameRateLimit": 60
+  }
+}
+
+settings {
+  encodeUrl: true
+}

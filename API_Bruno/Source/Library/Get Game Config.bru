@@ -1,0 +1,15 @@
+meta {
+  name: Get Game Config
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{server}}:{{port_base}}/library/1/config
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,21 @@
+meta {
+  name: Delete Game Config
+  type: http
+  seq: 1
+}
+
+delete {
+  url: {{server}}:{{port_base}}/library/1/config
+  body: none
+  auth: inherit
+}
+
+body:json {
+  {
+    "done" : true
+  }
+}
+
+settings {
+  encodeUrl: true
+}
