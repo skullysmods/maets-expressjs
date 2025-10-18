@@ -1,47 +1,73 @@
-import { Game } from '../models/index.js';
+import { listGames, createGame, getGameById, updateGameById, destroyGameById } from '../services/gameService.js';
 
-export const getAllGames = async (req, res) => {
-    const games = await Game.findAll({
-        order: [['id', 'ASC']]
-    });
-    res.json({ msg: 'All games.', games: games });
-};
-
-export const getGameById = async (req, res) => {
-    const game = await Game.findByPk(req.params.id);
-    if (!game) return res.status(404).json({ error: 'Not found' });
-    res.json({ msg: 'Game information', game: game });
-};
-
-export const createGame = async (req, res) => {
+export const index = async (req, res) => {
     try {
-        const { name } = req.body;
-        if (!name) return res.status(400).json({ error: 'name required' });
-
-        const exists = await Game.findOne({ where: { name } });
-        if (exists) return res.status(409).json({ error: 'Game already exist' });
-
-        const game = await Game.create({ name });
-
-        res.status(201).json({ id: game.id, name: game.name });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'game_add_failed' });
+        const games = await listGames();
+        res.status(200).json({ msg: 'All games.', games: games });
+    }
+    catch (error) {
+        res.status(500).json({ error: error.message || 'Internal server error' });
     }
 };
 
-export const editGame = async (req, res) => {
-    const { name } = req.body;
-    const game = await Game.findByPk(req.params.id);
-    if (!game) return res.status(404).json({ error: 'Not found' });
-    game.name = name;
-    await game.save();
-    res.json(game);
+export const show = async (req, res) => {
+    try {
+        const game = await getGameById(req.params.id);
+        if (!game) throw new Error('Game Not Found');
+        res.status(200).json({ msg: 'Game information', game: game });
+    }
+    catch (error) {
+        if (error.message === 'Game Not Found') {
+            res.status(404).json({ error: error.message });
+        } else {
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
 };
 
-export const deleteGame = async (req, res) => {
-    const result = await Game.findByPk(req.params.id);
-    if (!result) return res.status(404).json({ error: 'Not found' });
-    await result.destroy();
-    res.status(204).end();
+export const create = async (req, res) => {
+    try {
+        if (!req.body.name) throw new Error('Name required')
+        const game = await createGame(req.body.name)
+        res.status(201).json({ id: game.id, name: game.name });
+    } catch (error) {
+        if (error.message === 'Name required') {
+            res.status(400).json({ error: error.message });
+        } else if (error.message === 'Game already exist') {
+            res.status(409).json({ error: error.message });
+        } else {
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+};
+
+export const update = async (req, res) => {
+    try {
+        if (!req.body.name) throw new Error('Name required')
+        const game = await updateGameById(req.params.id, req.body.name)
+        res.status(200).json(game);
+    }
+    catch (error) {
+        if (error.message === 'Name required') {
+            res.status(400).json({ error: error.message });
+        } else if (error.message === 'Game Not Found') {
+            res.status(404).json({ error: error.message });
+        } else {
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+};
+
+export const destroy = async (req, res) => {
+    try {
+        await destroyGameById(req.params.id);
+        res.status(204).end();
+    }
+    catch (error) {
+        if (error.message === 'Game Not Found') {
+            res.status(404).json({ error: error.message });
+        } else {
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
 };

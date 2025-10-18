@@ -16,13 +16,19 @@ const router = Router();
 
 /**
  * @swagger
- * /library:
+ * /users/{id}/library:
  *   get:
  *     tags:
  *       - Library
  *     summary: Récupérer la liste des jeux de l'utilisateur connecté
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: Liste des jeux de l'utilisateur
@@ -45,11 +51,11 @@ const router = Router();
  *                       items:
  *                         $ref: '#/components/schemas/Game'
  */
-router.get('/', authRequired, getUserGames);
+router.get('/:id/library', authRequired, getUserGames);
 
 /**
  * @swagger
- * /library/add/user/{userId}/game/{gameId}:
+ * /users/{id}/library:
  *   post:
  *     tags:
  *       - Library
@@ -58,15 +64,22 @@ router.get('/', authRequired, getUserGames);
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: userId
+ *         name: id
  *         required: true
  *         schema:
  *           type: string
- *       - in: path
- *         name: gameId
- *         required: true
- *         schema:
- *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "Chess"
  *     responses:
  *       201:
  *         description: Jeu ajouté à la bibliothèque
@@ -90,11 +103,11 @@ router.get('/', authRequired, getUserGames);
  *       500:
  *         description: Erreur lors de l'ajout ou vérification admin
  */
-router.post('/add/user/:userId/game/:gameId', authRequired, adminRequired, addGameToLib);
+router.post('/:id/library', authRequired, adminRequired, addGameToLib);
 
 /**
  * @swagger
- * /library/{id}:
+ * /users/{userId}/library/{gameId}:
  *   delete:
  *     tags:
  *       - Library
@@ -103,7 +116,12 @@ router.post('/add/user/:userId/game/:gameId', authRequired, adminRequired, addGa
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: gameId
  *         required: true
  *         schema:
  *           type: string
@@ -115,11 +133,11 @@ router.post('/add/user/:userId/game/:gameId', authRequired, adminRequired, addGa
  *       404:
  *         description: Jeu ou utilisateur non trouvé, ou l'utilisateur ne possède pas ce jeu
  */
-router.delete('/:id', authRequired, removeGameToLib);
+router.delete('/:userId/library/:gameId', authRequired, removeGameToLib);
 
 /**
  * @swagger
- * /library/{id}/config:
+ * /users/{userId}/library/{gameId}/config:
  *   get:
  *     tags:
  *       - GameConfig
@@ -128,7 +146,12 @@ router.delete('/:id', authRequired, removeGameToLib);
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: gameId
  *         required: true
  *         schema:
  *           type: string
@@ -144,11 +167,11 @@ router.delete('/:id', authRequired, removeGameToLib);
  *       404:
  *         description: Pas de configuration pour ce jeu
  */
-router.get('/:id/config', authRequired, getGameConfigById);
+router.get('/:userId/library/:gameId/config', authRequired, getGameConfigById);
 
 /**
  * @swagger
- * /library/{id}/config:
+ * /users/{userId}/library/{gameId}/config:
  *   post:
  *     tags:
  *       - GameConfig
@@ -157,7 +180,12 @@ router.get('/:id/config', authRequired, getGameConfigById);
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: gameId
  *         required: true
  *         schema:
  *           type: string
@@ -181,11 +209,11 @@ router.get('/:id/config', authRequired, getGameConfigById);
  *       400:
  *         description: Erreur de validation
  */
-router.post('/:id/config', authRequired, addGameConfigById);
+router.post('/:userId/library/:gameId/config', authRequired, addGameConfigById);
 
 /**
  * @swagger
- * /library/{id}/config:
+ * /users/{userId}/library/{gameId}/config:
  *   patch:
  *     tags:
  *       - GameConfig
@@ -194,7 +222,12 @@ router.post('/:id/config', authRequired, addGameConfigById);
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: gameId
  *         required: true
  *         schema:
  *           type: string
@@ -216,11 +249,11 @@ router.post('/:id/config', authRequired, addGameConfigById);
  *       404:
  *         description: Configuration non trouvée
  */
-router.patch('/:id/config', authRequired, updateGameConfigById);
+router.patch('/:userId/library/:gameId/config', authRequired, updateGameConfigById);
 
 /**
  * @swagger
- * /library/{id}/config:
+ * /users/{userId}/library/{gameId}/config:
  *   delete:
  *     tags:
  *       - GameConfig
@@ -229,7 +262,12 @@ router.patch('/:id/config', authRequired, updateGameConfigById);
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: gameId
  *         required: true
  *         schema:
  *           type: string
@@ -241,6 +279,6 @@ router.patch('/:id/config', authRequired, updateGameConfigById);
  *       404:
  *         description: Configuration non trouvée
  */
-router.delete('/:id/config', authRequired, deleteGameConfigById);
+router.delete('/:userId/library/:gameId/config', authRequired, deleteGameConfigById);
 
 export default router;

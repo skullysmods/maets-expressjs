@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { authRequired, adminRequired } from '../middlewares/auth.js';
 import {
-    getAllGames,
-    getGameById,
-    createGame,
-    editGame,
-    deleteGame
+    index,
+    show,
+    create,
+    update,
+    destroy
 } from '../controllers/gameController.js';
 
 const router = Router();
@@ -31,8 +31,10 @@ const router = Router();
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/Game'
+ *       500:
+ *         description: Erreur serveur
  */
-router.get('/', getAllGames);
+router.get('/', index);
 
 /**
  * @swagger
@@ -76,9 +78,9 @@ router.get('/', getAllGames);
  *       409:
  *         description: Jeu déjà existant
  *       500:
- *         description: Erreur lors de la création ou vérification admin
+ *         description: Erreur serveur
  */
-router.post('/', authRequired, adminRequired, createGame);
+router.post('/', authRequired, adminRequired, create);
 
 /**
  * @swagger
@@ -107,8 +109,10 @@ router.post('/', authRequired, adminRequired, createGame);
  *                   $ref: '#/components/schemas/Game'
  *       404:
  *         description: Jeu non trouvé
+ *       500:
+ *         description: Erreur serveur
  */
-router.get('/:id', getGameById);
+router.get('/:id', show);
 
 /**
  * @swagger
@@ -142,6 +146,8 @@ router.get('/:id', getGameById);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Game'
+ *       400:
+ *         description: Nom requis
  *       401:
  *         description: Authentification requise
  *       403:
@@ -149,9 +155,9 @@ router.get('/:id', getGameById);
  *       404:
  *         description: Jeu non trouvé
  *       500:
- *         description: Erreur lors de la vérification admin
+ *         description: Erreur serveur
  */
-router.patch('/:id', authRequired, adminRequired, editGame);
+router.patch('/:id', authRequired, adminRequired, update);
 
 /**
  * @swagger
@@ -178,8 +184,8 @@ router.patch('/:id', authRequired, adminRequired, editGame);
  *       404:
  *         description: Jeu non trouvé
  *       500:
- *         description: Erreur lors de la vérification admin
+ *         description: Erreur serveur
  */
-router.delete('/:id', authRequired, adminRequired, deleteGame);
+router.delete('/:id', authRequired, adminRequired, destroy);
 
 export default router;

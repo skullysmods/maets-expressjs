@@ -5,9 +5,15 @@ meta {
 }
 
 post {
-  url: {{server}}:{{port_base}}/library/add/user/1/game/1
+  url: {{server}}:{{port_base}}/library/users/1/games
   body: json
   auth: inherit
+}
+
+body:json {
+  {
+    "name": "Minecraft"
+  }
 }
 
 settings {

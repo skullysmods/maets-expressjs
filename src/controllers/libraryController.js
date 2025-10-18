@@ -12,12 +12,14 @@ export const getUserGames = async (req, res) => {
     });
 };
 
+//TODO: support multiple game
 export const addGameToLib = async (req, res) => {
     try {
         const user = await User.findByPk(req.params.userId);
-        const game = await Game.findByPk(req.params.gameId);
+        const game = req.body.name;
+        console.log(game);
 
-        if (!user || !game) return res.status(404).json({ error: 'Not found' });
+        if (!user || !game) return res.status(404).json({ error: 'User or Game Not found' });
 
         if (await user.hasGame(game)) return res.status(409).json({ error: 'User already own this game' });
         await user.addGame(game);
