@@ -6,7 +6,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: appdb
+      MYSQL_DATABASE: maetsdb
       MYSQL_USER: app
       MYSQL_PASSWORD: apppass
     ports:
@@ -37,7 +37,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongo
       MONGO_INITDB_ROOT_PASSWORD: mongo
-      MONGO_INITDB_DATABASE: myapp_test
+      MONGO_INITDB_DATABASE: maets
     ports:
       - "27017:27017"
     volumes:

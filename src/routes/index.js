@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import authRoutes from './auth.js';
 import gameRoutes from './game.js';
-import libraryRoutes from './library.js';
+import userRoutes from './user.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerOptions from '../config/swaggerOptions.js';
@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
 
 router.use('/auth', authRoutes);
 router.use('/games', gameRoutes);
-router.use('/library', libraryRoutes);
+router.use('/users', userRoutes);
 router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 export default router;
