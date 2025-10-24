@@ -1,11 +1,11 @@
 meta {
   name: Add Game
   type: http
-  seq: 3
+  seq: 2
 }
 
 post {
-  url: {{server}}:{{port_base}}/library/users/1/games
+  url: {{server}}:{{port_base}}/users/1/library
   body: json
   auth: inherit
 }

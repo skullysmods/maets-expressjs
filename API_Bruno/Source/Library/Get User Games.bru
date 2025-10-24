@@ -1,11 +1,11 @@
 meta {
   name: Get User Games
   type: http
-  seq: 2
+  seq: 1
 }
 
 get {
-  url: {{server}}:{{port_base}}/library
+  url: {{server}}:{{port_base}}/users/1/library
   body: none
   auth: inherit
 }

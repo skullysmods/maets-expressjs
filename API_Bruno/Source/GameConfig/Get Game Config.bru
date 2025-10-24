@@ -1,11 +1,11 @@
 meta {
-  name: Get Tasks
+  name: Get Game Config
   type: http
   seq: 1
 }
 
 get {
-  url: {{server}}:{{port_base}}/tasks
+  url: {{server}}:{{port_base}}/users/1/library/1/config
   body: none
   auth: inherit
 }
