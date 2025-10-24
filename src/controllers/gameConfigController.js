@@ -1,48 +1,85 @@
-import GameConfig from '../models/gameConfig.js';
+import { createGameConfig, deleteGameConfigById, getGameConfigById, updateGameConfigById } from '../services/gameConfigService.js';
+import { getGameById } from '../services/gameService.js';
+import { getUserById } from '../services/libraryService.js';
 
-export const getGameConfigById = async (req, res) => {
-    const gameConfig = await GameConfig.findOne({
-        userId: req.user.id,
-        gameId: req.params.id
-    }).exec();
-    if (gameConfig === null) return res.status(404).json({ error: 'No config for this game' });
-    res.json(gameConfig);
-};
-
-export const addGameConfigById = async (req, res) => {
+export const showGameConfig = async (req, res) => {
     try {
-        const gameConfig = await GameConfig.findOne({
-            userId: req.user.id,
-            gameId: req.params.id
-        }).exec();
-        if (gameConfig !== null) return res.status(409).json({ error: 'User already have a config for this game' });
-        const configData = {
-            userId: req.user.id,
-            gameId: req.params.id,
-            ...req.body
+        const user = await getUserById(req.params.userId);
+        const game = await getGameById(req.params.gameId);
+        if (!user || !game) throw new Error('User or Game Not Found');
+
+        const gameConfig = await getGameConfigById(user.id, game.id);
+        if (gameConfig === null) throw new Error('No config for this game');
+        res.status(200).json(gameConfig);
+    } catch (error) {
+        if (error.message === 'User or Game Not Found' || error.message === 'No config for this game') {
+            res.status(404).json({ error: error.message });
+        } else {
+            res.status(500).json({ error: "Internal server error" });
         }
-        req.body = configData;
-        const game = await GameConfig.create(req.body);
-        res.status(201).json(game);
-    } catch (e) {
-        res.status(400).json({ error: e.message });
     }
 };
 
-export const updateGameConfigById = async (req, res) => {
-    const gameConfig = await GameConfig.findOneAndUpdate({
-        userId: req.user.id,
-        gameId: req.params.id
-    }, req.body, { new: true, runValidators: true });
-    if (!gameConfig) return res.status(404).json({ error: 'Not found' });
-    res.json(gameConfig);
+export const addGameConfig = async (req, res) => {
+    try {
+        const user = await getUserById(req.params.userId);
+        const game = await getGameById(req.params.gameId);
+        if (!user || !game) throw new Error('User or Game Not Found');
+
+        const gameConfig = await getGameConfigById(user.id, game.id);
+        if (gameConfig !== null) throw new Error('User already have a config for this game');
+        const configData = {
+            userId: user.id,
+            gameId: game.id,
+            ...req.body
+        }
+        req.body = configData;
+        const gameConfigData = await createGameConfig(req.body);
+        res.status(201).json(gameConfigData);
+    } catch (error) {
+        if (error.message === 'User or Game Not Found') {
+            res.status(404).json({ error: error.message });
+        } else if (error.message === 'User already have a config for this game') {
+            res.status(409).json({ error: error.message });
+        } else {
+            res.status(500).json({ error: "Internal server error" });
+        }
+    }
 };
 
-export const deleteGameConfigById = async (req, res) => {
-    const result = await GameConfig.findOneAndDelete({
-        userId: req.user.id,
-        gameId: req.params.id
-    });
-    if (!result) return res.status(404).json({ error: 'Not found' });
-    res.status(204).end();
+export const updateGameConfig = async (req, res) => {
+    try {
+        const user = await getUserById(req.params.userId);
+        const game = await getGameById(req.params.gameId);
+        if (!user || !game) throw new Error('User or Game Not Found');
+
+        const gameConfig = await updateGameConfigById(user.id, game.id, req.body);
+        if (gameConfig === null) throw new Error('No config for this game');
+        res.status(200).json(gameConfig);
+    } catch (error) {
+        if (error.message === 'User or Game Not Found' || error.message === 'No config for this game') {
+            res.status(404).json({ error: error.message });
+        } else {
+            res.status(500).json({ error: "Internal server error" });
+        }
+    }
+};
+
+export const deleteGameConfig = async (req, res) => {
+    try {
+        const user = await getUserById(req.params.userId);
+        const game = await getGameById(req.params.gameId);
+        if (!user || !game) throw new Error('User or Game Not Found');
+
+        const result = await deleteGameConfigById(user.id, game.id);
+        if (result === null) throw new Error('No config for this game');
+        res.status(204).end();
+    } catch (error) {
+        if (error.message === 'User or Game Not Found' || error.message === 'No config for this game') {
+            res.status(404).json({ error: error.message });
+        } else {
+            res.status(500).json({ error: "Internal server error" });
+        }
+    }
+    
 };
