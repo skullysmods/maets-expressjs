@@ -1,7 +1,5 @@
-// test/unit/game.test.js
 import { jest } from '@jest/globals';
 
-// 👇 Crée un seul objet partagé pour le mock
 const mockGameModel = {
   findAll: jest.fn(),
   findByPk: jest.fn(),
@@ -9,12 +7,10 @@ const mockGameModel = {
   create: jest.fn(),
 };
 
-// 👇 Mock du module models
 await jest.unstable_mockModule('../../src/models/index.js', () => ({
   Game: mockGameModel,
 }));
 
-// 👇 Import du service APRÈS le mock
 const {
   listGames,
   createGame,

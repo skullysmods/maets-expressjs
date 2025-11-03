@@ -22,6 +22,7 @@ Avant de commencer, assurez-vous que vous remplissez les conditions suivantes :
 *   **npm** (Node Package Manager) : généralement installé avec Node.js.
 *   **Docker :** (pour la conteneurisation) [Télécharger Docker](https://www.docker.com/)
 *   **Bruno IDE** : (requis pour les tests API) [Télécharger Bruno IDE](https://www.usebruno.com/)
+*   **Prettier** : (extension VSCode pour le formattage)
 
 ## Instructions d'installation et de configuration
 
@@ -106,3 +107,7 @@ Les variables d'environnement suivantes peuvent être configurées dans le fichi
 | `DB_PORT`      | Port de la base de données MariaDB                             | `3306`         |
 | `MONGODB_URI`  | URI de connexion MongoDB                             |               |
 | `JWT_SECRET`   | Clé secrète pour le chiffrement JWT                     |               |
+
+## Personnalisation
+Pour le formatage et la lisibilité du code, vous devez utiliser Prettier
+Configurer la taille des tabulations à 2

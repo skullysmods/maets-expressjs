@@ -1,12 +1,12 @@
-import { Router } from 'express';
-import { authRequired } from '../middlewares/auth.js';
+import { Router } from "express";
+import { authRequired } from "../middlewares/auth.js";
 
 import {
-    showGameConfig,
-    addGameConfig,
-    updateGameConfig,
-    deleteGameConfig
-} from '../controllers/gameConfigController.js'
+  showGameConfig,
+  addGameConfig,
+  updateGameConfig,
+  deleteGameConfig,
+} from "../controllers/gameConfigController.js";
 
 const router = Router();
 
@@ -42,7 +42,7 @@ const router = Router();
  *       404:
  *         description: Pas de configuration pour ce jeu
  */
-router.get('/:userId/library/:gameId/config', authRequired, showGameConfig);
+router.get("/:userId/library/:gameId/config", authRequired, showGameConfig);
 
 /**
  * @swagger
@@ -84,7 +84,7 @@ router.get('/:userId/library/:gameId/config', authRequired, showGameConfig);
  *       400:
  *         description: Erreur de validation
  */
-router.post('/:userId/library/:gameId/config', authRequired, addGameConfig);
+router.post("/:userId/library/:gameId/config", authRequired, addGameConfig);
 
 /**
  * @swagger
@@ -124,7 +124,7 @@ router.post('/:userId/library/:gameId/config', authRequired, addGameConfig);
  *       404:
  *         description: Configuration non trouvée
  */
-router.patch('/:userId/library/:gameId/config', authRequired, updateGameConfig);
+router.patch("/:userId/library/:gameId/config", authRequired, updateGameConfig);
 
 /**
  * @swagger
@@ -154,6 +154,10 @@ router.patch('/:userId/library/:gameId/config', authRequired, updateGameConfig);
  *       404:
  *         description: Configuration non trouvée
  */
-router.delete('/:userId/library/:gameId/config', authRequired, deleteGameConfig);
+router.delete(
+  "/:userId/library/:gameId/config",
+  authRequired,
+  deleteGameConfig
+);
 
 export default router;

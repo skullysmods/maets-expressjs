@@ -10,14 +10,14 @@ const Game = gameFactory(sequelize);
 
 // Many-to-Many via UserRoles
 const UserRoles = sequelize.define('UserRoles', {
-    UserId: { type: DataTypes.BIGINT.UNSIGNED, allowNull: false },
-    RoleId: { type: DataTypes.INTEGER.UNSIGNED, allowNull: false }
+  UserId: { type: DataTypes.BIGINT.UNSIGNED, allowNull: false },
+  RoleId: { type: DataTypes.INTEGER.UNSIGNED, allowNull: false }
 }, { tableName: 'UserRoles', timestamps: false });
 
 // Many-to-Many via UserGames
 const UserGames = sequelize.define('UserGames', {
-    UserId: { type: DataTypes.BIGINT.UNSIGNED, allowNull: false },
-    GameId: { type: DataTypes.BIGINT.UNSIGNED, allowNull: false }
+  UserId: { type: DataTypes.BIGINT.UNSIGNED, allowNull: false },
+  GameId: { type: DataTypes.BIGINT.UNSIGNED, allowNull: false }
 }, { tableName: 'UserGames', timestamps: false });
 
 User.belongsToMany(Role, { through: UserRoles, foreignKey: 'UserId' });
