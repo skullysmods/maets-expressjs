@@ -71,6 +71,34 @@ services:
         fi
     restart: "no"
 
+  # ----------- Cron-based Backup Service -----------
+  backup:
+    image: alpine:3.20
+    container_name: backup-cron
+    depends_on:
+      - db
+      - mongo-rs
+    environment:
+      MYSQL_HOST: db
+      MYSQL_USER: app
+      MYSQL_PASSWORD: apppass
+      MYSQL_DATABASE: maetsdb
+      MONGO_HOST: mongo-rs
+      MONGO_USER: mongo
+      MONGO_PASSWORD: mongo
+    command: >
+      /bin/sh -c "
+        apk add --no-cache mariadb-client mongodb-tools busybox-suid &&
+        echo '0 */1 * * * /backup-script.sh >> /var/log/cron.log 2>&1' > /etc/crontabs/root &&
+        echo 'Cron service started. Dumps every hours.' &&
+        crond -f -L /var/log/cron.log
+      "
+    volumes:
+      - ./backup-script.sh:/backup-script.sh:ro
+      - backups:/backups
+    restart: always
+
 volumes:
   dbdata:
   mongo-config:
+  backups:
